@@ -1,0 +1,55 @@
+//import { ListaDeCompraService } from 'src/app/service/lista-de-compra.service';
+import { Item } from 'src/app/interfaces/iItem';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ListaDeCompraService {
+
+  private listaDeCompra: Item[];
+
+  constructor() {
+    //console.log('Instanciando dependências necessárias para o serviço.');
+    this.listaDeCompra = JSON.parse(localStorage.getItem('itens')||'[]');
+  }
+
+  adicionarItem(nomeDoItem: string){
+    const item = this.criarItem(nomeDoItem);
+    this.listaDeCompra.push(item);
+   // this.atualizarLocalStorage();
+  }
+
+  editarItem(itemAntigo: Item, nomeDoItemNovo: string){
+
+    const itemAlterado: Item = {
+      id: itemAntigo.id,
+      nome: nomeDoItemNovo,
+      data: itemAntigo.data,
+      comprado: itemAntigo.comprado
+    }
+    const id = itemAntigo.id
+    this.listaDeCompra.splice(Number(id) -1,1,itemAlterado);
+   // this.atualizarLocalStorage();
+
+  }
+
+  getListaDeCompra(){
+    return this.listaDeCompra;
+  }
+
+  criarItem(nomeDoItem: string){
+    const id = this.listaDeCompra.length +1;
+    const item: Item = {
+      id: id,
+      nome: nomeDoItem,
+      data: new Date().toLocaleString('pt-BR'),
+      comprado: false
+    }
+    return item;
+  }
+
+  atualizarLocalStorage(){
+    localStorage.setItem(('itens'), JSON.stringify(this.listaDeCompra));
+  }
+}
